@@ -67,10 +67,30 @@
   text-overflow: ellipsis;
 }
 
-.webview-container {
+/* New status bar styling */
+.browser-status-bar {
+  padding: 8px 12px;
+  background-color: #fffde7;
+  font-size: 13px;
+  color: #d32f2f;
+  border-bottom: 1px solid #ffecb3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: fadeIn 0.3s;
+}
+
+/* Status animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.browser-content {
   flex: 1;
   display: flex;
   background-color: white;
+  position: relative;
 }
 
 .webview {
@@ -86,6 +106,29 @@
   100% { opacity: 0.6; }
 }
 
-.browser-title-bar:has(+ .webview-container webview[loading]) {
+.browser-title-bar:has(+ .browser-content webview[loading]) {
   animation: pulse 1.5s infinite;
+}
+
+/* Legacy style kept for backward compatibility */
+.webview-container {
+  flex: 1;
+  display: flex;
+  background-color: white;
+}
+
+/* Style for the status/error overlay - kept for backward compatibility but browser-status-bar is preferred */
+.webview-status-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  text-align: center;
+  z-index: 10;
+  color: red;
+  font-weight: bold;
 } 
