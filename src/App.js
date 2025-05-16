@@ -5,7 +5,8 @@ import EmbeddedBrowser from './components/EmbeddedBrowser';
 import BatchBrowser from './components/BatchBrowser';
 import UrlHistory from './components/UrlHistory';
 
-const { ipcRenderer } = window.require('electron');
+// Replace direct ipcRenderer with the safe version from preload.js
+const electron = window.electron;
 
 function App() {
   const [inputText, setInputText] = useState('');

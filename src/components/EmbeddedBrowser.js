@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './EmbeddedBrowser.css';
 
-const { ipcRenderer } = window.require('electron');
+// Replace direct ipcRenderer with the safe version from preload.js
+const electron = window.electron;
 
 const EmbeddedBrowser = ({ url, batchId, onNavigate }) => {
   const [currentUrl, setCurrentUrl] = useState(url || '');
@@ -34,7 +35,7 @@ const EmbeddedBrowser = ({ url, batchId, onNavigate }) => {
       
       // Log the URL opening with timestamp
       const timestamp = new Date().toISOString();
-      ipcRenderer.send('log-url-opened', { 
+      electron.send('log-url-opened', { 
         url: webview.getURL(), 
         timestamp, 
         batchId 
@@ -90,13 +91,13 @@ const EmbeddedBrowser = ({ url, batchId, onNavigate }) => {
 
   const handleOpenExternal = () => {
     if (currentUrl) {
-      ipcRenderer.send('open-external', currentUrl);
+      electron.send('open-external', currentUrl);
     }
   };
 
   const handleDownload = () => {
     if (currentUrl) {
-      ipcRenderer.send('download-pdf', { url: currentUrl });
+      electron.send('download-pdf', { url: currentUrl });
     }
   };
 

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import './BatchBrowser.css';
 
-const { ipcRenderer } = window.require('electron');
+// Replace direct ipcRenderer with the safe version from preload.js
+const electron = window.electron;
 
 const BatchBrowser = ({ urls, batchSize, onBatchStart, onBatchComplete }) => {
   const [currentBatch, setCurrentBatch] = useState(1);
@@ -36,15 +37,15 @@ const BatchBrowser = ({ urls, batchSize, onBatchStart, onBatchComplete }) => {
     }
     
     // Open batch in a new window via Electron IPC
-    const windowId = ipcRenderer.sendSync('open-batch', {
-      batchId: batchNum,
-      urls: batchUrls
-    });
-    
-    if (windowId) {
-      setProcessingStatus(`Batch ${batchNum} window opened (Window ID: ${windowId})`);
-    } else {
-      setProcessingStatus(`Failed to open batch ${batchNum} window.`);
+    try {
+      electron.send('open-batch', {
+        batchId: batchNum,
+        urls: batchUrls
+      });
+      
+      setProcessingStatus(`Batch ${batchNum} window opened`);
+    } catch (error) {
+      setProcessingStatus(`Failed to open batch ${batchNum} window. Error: ${error.message}`);
     }
     
     setIsProcessing(false);

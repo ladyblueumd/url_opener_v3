@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './UrlHistory.css';
 
-const { ipcRenderer } = window.require('electron');
+// Replace direct ipcRenderer with the safe version from preload.js
+const electron = window.electron;
 
 const UrlHistory = () => {
   const [urlHistory, setUrlHistory] = useState([]);
@@ -14,10 +15,11 @@ const UrlHistory = () => {
     const loadHistory = async () => {
       try {
         setIsLoading(true);
-        const history = await ipcRenderer.invoke('get-opened-urls');
-        setUrlHistory(history);
+        const history = await electron.invoke('get-opened-urls');
+        setUrlHistory(history || []);
       } catch (error) {
         console.error('Failed to load URL history:', error);
+        setUrlHistory([]);
       } finally {
         setIsLoading(false);
       }
@@ -66,7 +68,7 @@ const UrlHistory = () => {
 
   // Handle open URL in external browser
   const handleOpenUrl = (url) => {
-    ipcRenderer.send('open-external', url);
+    electron.send('open-external', url);
   };
 
   return (
